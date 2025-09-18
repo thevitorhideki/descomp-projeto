@@ -14,44 +14,41 @@ entity memoriaROM is
 end entity;
 
 architecture assincrona of memoriaROM is
+	constant NOP  : std_logic_vector(3 downto 0) := "0000";
+	constant LDA  : std_logic_vector(3 downto 0) := "0001";
+	constant SOMA : std_logic_vector(3 downto 0) := "0010";
+	constant SUB  : std_logic_vector(3 downto 0) := "0011";
+	constant LDI : std_logic_vector(3 downto 0) := "0100";
+	constant STA : std_logic_vector(3 downto 0) := "0101";
+	constant JMP : std_logic_vector(3 downto 0) := "0110";
+	constant JEQ : std_logic_vector(3 downto 0) := "0111";
+	constant CEQ : std_logic_vector(3 downto 0) := "1000";
+	constant JSR: std_logic_vector(3 downto 0) := "1001";
+	constant RET: std_logic_vector(3 downto 0) := "1010";
 
-  constant NOP  : std_logic_vector(3 downto 0) := "0000";
-  constant LDA  : std_logic_vector(3 downto 0) := "0001";
-  constant SOMA : std_logic_vector(3 downto 0) := "0010";
-  constant SUB  : std_logic_vector(3 downto 0) := "0011";
-  constant LDI  : std_logic_vector(3 downto 0) := "0100";
-  constant STA  : std_logic_vector(3 downto 0) := "0101";
-  constant JMP  : std_logic_vector(3 downto 0) := "0110";
-  constant JEQ  : std_logic_vector(3 downto 0) := "0111";
-  constant CEQ  : std_logic_vector(3 downto 0) := "1000";
-  constant JSR  : std_logic_vector(3 downto 0) := "1001";
-  constant RET  : std_logic_vector(3 downto 0) := "1010";
-  
+
 
   type blocoMemoria is array(0 TO 2**addrWidth - 1) of std_logic_vector(dataWidth-1 DOWNTO 0);
 
   function initMemory
         return blocoMemoria is variable tmp : blocoMemoria := (others => (others => '0'));
-  begin
-      -- Palavra de Controle = SelMUX, Habilita_A, Reset_A, Operacao_ULA
-      -- Inicializa os endereços:
-        tmp(0)  := JSR & std_logic_vector(to_unsigned(14,9));   -- Desta posicao para baixo, é necessário acertar os valores
-        tmp(1)  := JMP & std_logic_vector(to_unsigned(5,9));
-        tmp(2)  := JEQ & std_logic_vector(to_unsigned(9,9));
-        tmp(3)  := NOP & std_logic_vector(to_unsigned(0,9));
-        tmp(4)  := NOP & std_logic_vector(to_unsigned(0,9));
-        tmp(5)  := LDI & std_logic_vector(to_unsigned(5,9));
-        tmp(6)  := STA & std_logic_vector(to_unsigned(256,9));
-        tmp(7)  := CEQ & std_logic_vector(to_unsigned(256,9));
-		  tmp(8)  := JMP & std_logic_vector(to_unsigned(2,9));
-        tmp(9)  := NOP & std_logic_vector(to_unsigned(0,9));
-		  tmp(10) := LDI & std_logic_vector(to_unsigned(4,9));
-		  tmp(11) := CEQ & std_logic_vector(to_unsigned(256,9));
-		  tmp(12) := JEQ & std_logic_vector(to_unsigned(3,9));
-		  tmp(13) := JMP & std_logic_vector(to_unsigned(13,9));
-		  tmp(14) := NOP & std_logic_vector(to_unsigned(0,9));
-		  tmp(15) := RET & std_logic_vector(to_unsigned(0,9));
-
+begin
+	  tmp(0) := JSR & "000001110";
+	  tmp(1) := JMP & "000000101";
+	  tmp(2) := JEQ & "000001001";
+	  tmp(3) := NOP & "000000000";
+	  tmp(4) := NOP & "000000000";
+	  tmp(5) := LDI & "000000101";
+	  tmp(6) := STA & "100000000";
+	  tmp(7) := CEQ & "100000000";
+	  tmp(8) := JMP & "000000010";
+	  tmp(9) := NOP & "000000000";
+	  tmp(10) := LDI & "000000100";
+	  tmp(11) := CEQ & "100000000";
+	  tmp(12) := JEQ & "000000011";
+	  tmp(13) := JMP & "000001101";
+	  tmp(14) := NOP & "000000000";
+	  tmp(15) := RET & "000000001"; 
 
         return tmp;
     end initMemory;
@@ -61,3 +58,5 @@ architecture assincrona of memoriaROM is
 begin
     Dado <= memROM (to_integer(unsigned(Endereco)));
 end architecture;
+
+

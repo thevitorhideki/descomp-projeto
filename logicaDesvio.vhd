@@ -1,20 +1,19 @@
-library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
+library ieee;
+use ieee.std_logic_1164.all;
 
-entity logicaDesvio is
-	port (
-		entrada_flag: in std_logic;
-		entrada_jeq: in std_logic;
-		entrada_jmp: in std_logic;
-		entrada_jsr: in std_logic;
-		entrada_ret: in std_logic;
-
-		saida: out std_logic_vector(1 downto 0)
+entity LogicaDesvio is
+  -- Total de bits das entradas e saidas
+  generic ( larguraDados : natural := 8);
+  port (
+    entrada_flag, entrada_jmp, entrada_jeq, entrada_jsr, entrada_ret : in std_logic;
+	 saida: out std_logic_vector(1 downto 0)
 	);
 end entity;
 
 architecture comportamento of logicaDesvio is
-begin
-	saida(1) <= entrada_ret;
-	saida(0) <= entrada_jmp OR (entrada_jeq AND entrada_flag) OR entrada_jsr;
+  begin
+
+  saida <= "01" when ( (entrada_jeq = '1' and entrada_flag = '1')  or entrada_jmp = '1' or entrada_jsr = '1') else
+                      "10" when (entrada_ret = '1') else
+                      "00";
 end architecture;
